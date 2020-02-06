@@ -1,0 +1,19 @@
+#!starlark
+
+gitResource("src-git", url="$(context.git.url)", revision="$(context.git.commit)")
+
+task("test", inputs = ["src-git"], steps = [k8s.corev1.Container(
+    name = "test",
+    image = "golang:1.13.0-buster",
+    command = [ "echo", "hello", "world" ],
+    workingDir = "/workspace/src-git",
+    resources = k8s.corev1.ResourceRequirements(
+        limits = {
+            "cpu": k8s.resource_quantity("1000m"),
+            "memory": k8s.resource_quantity("8Gi")
+        }
+    )
+)])
+
+action(tasks = ["test"], on = push(branches = ["master"]))
+action(tasks = ["test"], on = pullRequest(chatops = ["test"]))
