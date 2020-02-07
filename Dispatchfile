@@ -9,7 +9,7 @@ task("test", inputs = ["src-git"], steps = [k8s.corev1.Container(
     workingDir = "/workspace/src-git",
     resources = k8s.corev1.ResourceRequirements(
         limits = {
-            "cpu": k8s.resource_quantity("1000m"),
+            "cpu": k8s.resource_quantity("8000m"),
             "memory": k8s.resource_quantity("32Gi")
         }
     )
