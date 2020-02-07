@@ -22,7 +22,7 @@ task("dispatch-integration-test", inputs = ["src-git"], steps = [k8s.corev1.Cont
     workingDir = "/workspace/src-git",
     resources = k8s.corev1.ResourceRequirements(
         limits = {
-            "cpu": k8s.resource_quantity("8000m"),
+            "cpu": k8s.resource_quantity("8"),
             "memory": k8s.resource_quantity("32Gi")
         }
     )
