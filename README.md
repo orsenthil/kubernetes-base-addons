@@ -39,6 +39,12 @@ Some supported releases are supported via the terms of support for some other KS
 
 For all other non-official releases, make sure your tag and description are distinctly different from the official release pattern, explain the purpose of your release, and mark is as a `pre-release`.
 
+# Testing
+
+Tests in this repo are exercised using Dispatch.
+
 # Contributing
 
 See our [Contributing Documentation](CONTRIBUTING.md).
+
+
