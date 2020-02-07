@@ -18,7 +18,7 @@ task("dispatch-ping", inputs = ["src-git"], steps = [k8s.corev1.Container(
 task("dispatch-integration-test", inputs = ["src-git"], steps = [k8s.corev1.Container(
     name = "dispatch-integration-test",
     image = "golang:1.13.0-buster",
-    command = [ "echo", "pong"],
+    command = [ "make", "go-ver"],
     workingDir = "/workspace/src-git",
     resources = k8s.corev1.ResourceRequirements(
         limits = {
