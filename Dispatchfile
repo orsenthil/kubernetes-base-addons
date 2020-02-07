@@ -3,9 +3,9 @@
 gitResource("src-git", url="$(context.git.url)", revision="$(context.git.commit)")
 
 task("test", inputs = ["src-git"], steps = [k8s.corev1.Container(
-    name = "test",
+    name = "dispatch/ping",
     image = "golang:1.13.0-buster",
-    command = [ "echo", "hello", "world" ],
+    command = [ "echo", "pong"],
     workingDir = "/workspace/src-git",
     resources = k8s.corev1.ResourceRequirements(
         limits = {
