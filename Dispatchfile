@@ -15,5 +15,19 @@ task("dispatch-ping", inputs = ["src-git"], steps = [k8s.corev1.Container(
     )
 )])
 
+task("dispatch-integration-test", inputs = ["src-git"], steps = [k8s.corev1.Container(
+    name = "dispatch-integration-test",
+    image = "golang:1.13.0-buster",
+    command = [ "echo", "pong"],
+    workingDir = "/workspace/src-git",
+    resources = k8s.corev1.ResourceRequirements(
+        limits = {
+            "cpu": k8s.resource_quantity("8000m"),
+            "memory": k8s.resource_quantity("32Gi")
+        }
+    )
+)])
+
 action(tasks = ["dispatch-ping"], on = push(branches = ["master"]))
-action(tasks = ["dispatch-ping"], on = pullRequest(chatops = ["test"]))
+action(tasks = ["dispatch-ping"], on = pullRequest(chatops = ["ping"]))
+action(tasks = ["dispatch-integration-test"], on = pullRequest())
