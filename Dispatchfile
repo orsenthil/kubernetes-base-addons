@@ -3,7 +3,7 @@
 gitResource("src-git", url="$(context.git.url)", revision="$(context.git.commit)")
 
 task("test", inputs = ["src-git"], steps = [k8s.corev1.Container(
-    name = "dispatch/ping",
+    name = "dispatch-ping",
     image = "golang:1.13.0-buster",
     command = [ "echo", "pong"],
     workingDir = "/workspace/src-git",
