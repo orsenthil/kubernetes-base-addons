@@ -2,18 +2,32 @@
 
 gitResource("src-git", url="$(context.git.url)", revision="$(context.git.commit)")
 
-task("test", inputs = ["src-git"], steps = [k8s.corev1.Container(
-    name = "test",
+task("dispatch-ping", inputs = ["src-git"], steps = [k8s.corev1.Container(
+    name = "dispatch-ping",
     image = "golang:1.13.0-buster",
-    command = [ "echo", "hello", "world" ],
+    command = [ "echo", "pong"],
     workingDir = "/workspace/src-git",
     resources = k8s.corev1.ResourceRequirements(
         limits = {
-            "cpu": k8s.resource_quantity("1000m"),
+            "cpu": k8s.resource_quantity("100m"),
+            "memory": k8s.resource_quantity("0.1Gi")
+        }
+    )
+)])
+
+task("dispatch-integration-test", inputs = ["src-git"], steps = [k8s.corev1.Container(
+    name = "dispatch-integration-test",
+    image = "golang:1.13.0-buster",
+    command = [ "make", "go-ver"],
+    workingDir = "/workspace/src-git",
+    resources = k8s.corev1.ResourceRequirements(
+        limits = {
+            "cpu": k8s.resource_quantity("8"),
             "memory": k8s.resource_quantity("32Gi")
         }
     )
 )])
 
-action(tasks = ["test"], on = push(branches = ["master"]))
-action(tasks = ["test"], on = pullRequest(chatops = ["test"]))
+action(tasks = ["dispatch-ping"], on = push(branches = ["master"]))
+action(tasks = ["dispatch-ping"], on = pullRequest(chatops = ["ping"]))
+action(tasks = ["dispatch-integration-test"], on = pullRequest())

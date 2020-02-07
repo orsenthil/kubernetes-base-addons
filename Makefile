@@ -26,3 +26,7 @@ test.integration: git-credentials
 	for g in $(shell cd test && go run scripts/test-wrapper.go); do \
 		go test -timeout 30m -race -v -run $$g; \
 	done
+
+.PHONY: go-ver
+go-ver:
+	go version
