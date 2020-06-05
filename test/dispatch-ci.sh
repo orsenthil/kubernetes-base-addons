@@ -14,7 +14,7 @@ echo "git fetch branches."
 git fetch
 
 echo "INFO: Exercise TestAwsGroup "
-go test -tags experimental -timeout 60m -race -v -run TestGeneralGroup
+go test -tags experimental -timeout 60m -race -v -run TestPrometheusGroup
 
 # Fix kind cluster issues on Dispatch CI before enabling complete test-suite.
 
