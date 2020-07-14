@@ -1,4 +1,5 @@
-#!starlark
+#!mesosphere/dispatch-starlark:v0.5-beta2
+# vi:syntax=python
 
 gitResource("src-git", url="$(context.git.url)",
             revision="$(context.git.commit)")
