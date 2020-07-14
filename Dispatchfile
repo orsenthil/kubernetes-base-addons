@@ -32,17 +32,7 @@ dindTask("dispatch-integration-test",
                       k8s.corev1.EnvVar(name="SSH_KEY_BASE64",
                                         valueFrom=secretVar("d2iq-dispatch-git-ssh-base64",
                                                             "ssh-privatekey-base64"))
-                      ],
-                 resources=k8s.corev1.ResourceRequirements(
-                     requests={
-                         "cpu": k8s.resource_quantity("750m"),
-                         "memory": k8s.resource_quantity("2Gi")
-                     },
-                     limits={
-                         "cpu": k8s.resource_quantity("8000m"),
-                         "memory": k8s.resource_quantity("6Gi")
-                     }
-                 )
+                      ]
              )
          ]
          )
