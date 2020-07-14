@@ -4,18 +4,16 @@
 load("github.com/mesosphere/dispatch-catalog/starlark/stable/pipeline@0.0.4", "gitResource", "pullRequest", "push", "secretVar", "clean", "imageResource", "volume")
 load("github.com/mesosphere/dispatch-catalog/starlark/stable/docker@0.0.4", "dindTask")
 
+gitResource("kba-git-resource", url = "$(context.git.url)", revision = "$(context.git.commit)")
 
-gitResource("src-git", url="$(context.git.url)",
-            revision="$(context.git.commit)")
 
 
 dindTask("dispatch-integration-test",
-         inputs=["src-git"],
+         inputs=["kba-git-resource"],
          steps=[
              v1.Container(
                  name="fetch-master",
-                 image="mesosphere/dispatch-dind:v0.5.2",
-                 workingDir="/workspace/src-git",
+                 workingDir="/workspace/kba-git-resource",
                  args=["git", "fetch", "origin", "master"]),
 
              v1.Container(
