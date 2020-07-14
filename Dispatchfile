@@ -1,14 +1,12 @@
 #!mesosphere/dispatch-starlark:v0.5-beta2
 # vi:syntax=python
 
+load("github.com/mesosphere/dispatch-catalog/starlark/stable/pipeline@0.0.4", "gitResource", "pullRequest", "push", "secretVar", "clean", "imageResource", "volume")
+load("github.com/mesosphere/dispatch-catalog/starlark/stable/docker@0.0.4", "dindTask")
+
+
 gitResource("src-git", url="$(context.git.url)",
             revision="$(context.git.commit)")
-
-
-def secretVar(name, key):
-    return k8s.corev1.EnvVarSource(secretKeyRef=k8s.corev1.SecretKeySelector(
-        localObjectReference=k8s.corev1.LocalObjectReference(name=name),
-        key=key))
 
 
 dindTask("dispatch-integration-test",
