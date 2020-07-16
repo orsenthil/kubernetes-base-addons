@@ -7,15 +7,19 @@ load("github.com/mesosphere/cluster-claim-controller/starlark/claim", "make_kind
 
 gitResource("kba-git-resource", url = "$(context.git.url)", revision = "$(context.git.commit)")
 
-
+cluster_name = "test-cluster"
+kind_cluster = make_kind_cluster(cluster_name, git)
 
 dindTask("dispatch-integration-test",
          inputs=["kba-git-resource"],
+         deps=[kind_cluster],
          steps=[
              v1.Container(
                  name="fetch-master",
                  workingDir="/workspace/kba-git-resource",
                  args=["git", "fetch", "origin", "master"]),
+
+             fetch_kubeconfig(cluster_name, "kba-git-resource"),
 
              v1.Container(
                  name="dispatch-integration-test",
@@ -38,5 +42,7 @@ dindTask("dispatch-integration-test",
          ]
          )
 
-action(tasks=["dispatch-integration-test"], on=pullRequest())
-action(tasks=["dispatch-integration-test"], on=pullRequest(chatops=["test"]))
+clean_kind=cleanup(kind_cluster, "dispatch-integration-test", "kba-git-resource")
+
+action(tasks=["dispatch-integration-test", clean_kind], on=pullRequest())
+action(tasks=["dispatch-integration-test", clean_kind], on=pullRequest(chatops=["test"]))
