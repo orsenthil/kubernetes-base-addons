@@ -3,6 +3,7 @@
 
 load("github.com/mesosphere/dispatch-catalog/starlark/stable/pipeline@0.0.4", "gitResource", "pullRequest", "push", "secretVar", "clean", "imageResource", "volume")
 load("github.com/mesosphere/dispatch-catalog/starlark/stable/docker@0.0.4", "dindTask")
+load("github.com/mesosphere/cluster-claim-controller/starlark/claim", "make_kind_cluster", "fetch_kubeconfig", "cleanup")
 
 gitResource("kba-git-resource", url = "$(context.git.url)", revision = "$(context.git.commit)")
 
