@@ -34,35 +34,8 @@ dindTask("dispatch-integration-test",
                                                             "AWS_SECRET_ACCESS_KEY")),
                       k8s.corev1.EnvVar(name="SSH_KEY_BASE64",
                                         valueFrom=secretVar("d2iq-dispatch-git-ssh-base64",
-                                                            "ssh-privatekey-base64"))
-                      ]
-             )
-         ]
-         )
+                                                            "ssh-privatekey-base64"))])
+		])
 
-
-kind_cluster=make_kind_cluster(cluster_name, git_resource_name)
-
-task("test", inputs=[git_resource_name], deps=[kind_cluster], steps=[
-    fetch_kubeconfig(cluster_name, git_resource_name),
-    k8s.corev1.Container(
-        name = "test",
-        image = "mesosphere/kubeaddons-ci:latest",
-        workingDir = "/workspace/{}/".format(git),
-        command = ["/bin/bash", "-c"],
-        args = ["""
-            cat ./kubeconfig
-            curl -L https://go.kubebuilder.io/dl/2.3.0/linux/amd64 | tar -xz -C /tmp/ && \
-    mv /tmp/kubebuilder_2.3.0_linux_amd64 /usr/local/kubebuilder && \
-            make test
-        """],
-        env = [
-            k8s.corev1.EnvVar(name="GOPRIVATE", value="github.com/mesosphere"),
-            k8s.corev1.EnvVar(name="SSH_KEY_BASE64", valueFrom=secretVar("d2iq-dispatch-git-ssh-base64", "ssh-privatekey-base64")),
-            k8s.corev1.EnvVar(name="USE_EXISTING", value="1")
-        ]
-    )
-])
-
-action(tasks=["dispatch-integration-test", "test"], on=pullRequest())
-action(tasks=["dispatch-integration-test", "test"], on=pullRequest(chatops=["test"]))
+action(tasks=["dispatch-integration-test"], on=pullRequest())
+action(tasks=["dispatch-integration-test"], on=pullRequest(chatops=["test"]))
