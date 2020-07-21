@@ -3,24 +3,28 @@
 
 load("github.com/mesosphere/dispatch-catalog/starlark/stable/pipeline@0.0.4", "gitResource", "pullRequest", "push", "secretVar", "clean", "imageResource", "volume")
 load("github.com/mesosphere/dispatch-catalog/starlark/stable/docker@0.0.4", "dindTask")
+load("github.com/mesosphere/dispatch-catalog/starlark/stable/kaniko@0.0.4", "kaniko")
+load("github.com/mesosphere/cluster-claim-controller/starlark/claim@master", "make_kind_cluster", "fetch_kubeconfig", "cleanup")
 
-gitResource("kba-git-resource", url = "$(context.git.url)", revision = "$(context.git.commit)")
+git_resource_name = "kba-git-resource"
+cluster_name = "test-cluster"
 
-
+git = gitResource(git_resource_name)
+kind_cluster = make_kind_cluster(cluster_name, git)
 
 dindTask("dispatch-integration-test",
-         inputs=["kba-git-resource"],
+         inputs=[git_resource_name],
          steps=[
              v1.Container(
                  name="fetch-master",
-                 workingDir="/workspace/kba-git-resource",
+                 workingDir="/workspace/{git_resource_name}".format(git_resource_name=git_resource_name),
                  args=["git", "fetch", "origin", "master"]),
 
              v1.Container(
                  name="dispatch-integration-test",
                  image="mesosphere/kubeaddons-ci:dispatch@sha256:80a6f3c8775133b4ad2fab3d44ab4fbb4b541dbc03fcdb296b13f67611427d8c",
                  command=["/entrypoint.sh", "make", "dispatch-test"],
-                 workingDir="/workspace/kba-git-resource",
+                 workingDir="/workspace/{git_resource_name}".format(git_resource_name=git_resource_name),
                  env=[k8s.corev1.EnvVar(name="DISPATCH_CI", value="true"),
                       k8s.corev1.EnvVar(name="AWS_REGION", value="us-west-2"),
                       k8s.corev1.EnvVar(name="AWS_ACCESS_KEY_ID",
