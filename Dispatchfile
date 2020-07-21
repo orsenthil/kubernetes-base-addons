@@ -10,7 +10,6 @@ git_resource_name = "kba-git-resource"
 cluster_name = "test-cluster"
 
 git = gitResource(git_resource_name)
-kind_cluster = make_kind_cluster(cluster_name, git)
 
 dindTask("dispatch-integration-test",
          inputs=[git_resource_name],
