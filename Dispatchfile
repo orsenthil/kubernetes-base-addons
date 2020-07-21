@@ -60,5 +60,5 @@ task("test", inputs=[git_resource_name], deps=[kind_cluster], steps=[
     )
 ])
 
-action(tasks=["dispatch-integration-test"], on=pullRequest())
-action(tasks=["dispatch-integration-test"], on=pullRequest(chatops=["test"]))
+action(tasks=["test"], on=pullRequest())
+action(tasks=["test"], on=pullRequest(chatops=["test"]))
